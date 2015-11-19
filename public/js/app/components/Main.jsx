@@ -3,6 +3,7 @@
 import React from 'react';
 
 import Table from './Table.jsx';
+import Control from './Control.jsx';
 
 import Game from '../Game.js';
 
@@ -34,6 +35,10 @@ var Main = React.createClass({
         }
     },
 
+    resetGame: function() {
+        this.setState(this.getInitialState());
+    },
+
     _getNextPlayer: function() {
         if (this.state.currentPlayer == players['1']) {
             return players['2'];
@@ -49,6 +54,7 @@ var Main = React.createClass({
                     data={this.state.table}
                     onSelectCell={this.selectCell}
                 />
+                <Control onReset={this.resetGame} />
             </div>
         );
     }
