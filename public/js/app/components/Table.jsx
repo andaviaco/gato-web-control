@@ -31,7 +31,7 @@ var Table = React.createClass({
 
     render: function () {
         return (
-            <table>
+            <table className="game-table">
                 <tbody>
                     {this.props.data.map(this._renderRow)}
                 </tbody>

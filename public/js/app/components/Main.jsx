@@ -7,8 +7,8 @@ import Table from './Table.jsx';
 import Game from '../Game.js';
 
 let players = {
-    '1': 'x',
-    '2': 'o'
+    '1': 'close', // x
+    '2': 'radio_button_unchecked' // o
 };
 
 var Main = React.createClass({

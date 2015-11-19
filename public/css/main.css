@@ -3,3 +3,18 @@ body {
     padding: 0;
     margin: 0;
 }
+
+.game-table {
+    text-align: center;
+}
+
+.game-cell {
+    border: 1px solid #ccc;
+    height: 100px;
+    width: 100px;
+}
+
+.player-icon {
+    vertical-align: bottom;
+    font-size: 64px;
+}
