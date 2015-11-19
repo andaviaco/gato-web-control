@@ -1,33 +1,54 @@
 'use strict';
 
 import React from 'react';
-import initial_config from '../../../data/initial_config.js';
+
+import Table from './Table.jsx';
+
+import Game from '../Game.js';
+
+let players = {
+    '1': 'x',
+    '2': 'o'
+};
 
 var Main = React.createClass({
-    _renderColumn: function (column) {
-        return (
-            <td key={column.key}>
-                {column.key}
-            </td>
-        );
+    getInitialState: function() {
+        let game = new Game();
+
+        return {
+            table: game.table,
+            currentPlayer: players['1']
+        };
     },
 
-    _renderRow: function (row, index) {
-        return (
-            <tr key={index}>
-                {row.map(this._renderColumn)}
-            </tr>
-        );
+    selectCell: function(x, y) {
+        let table = this.state.table;
+
+        if (!table[x][y].player) {
+            table[x][y].player = this.state.currentPlayer;
+
+            this.setState({
+                table: table,
+                currentPlayer: this._getNextPlayer()
+            });
+        }
+    },
+
+    _getNextPlayer: function() {
+        if (this.state.currentPlayer == players['1']) {
+            return players['2'];
+        }
+
+        return players['1'];
     },
 
     render: function () {
         return (
             <div>
-                <table>
-                    <tbody>
-                        {initial_config.table.map(this._renderRow)}
-                    </tbody>
-                </table>
+                <Table
+                    data={this.state.table}
+                    onSelectCell={this.selectCell}
+                />
             </div>
         );
     }

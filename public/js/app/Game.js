@@ -1,58 +1,52 @@
+import _ from 'underscore';
 
-let table = [
+var table = [
     [
         {
             key: 0,
-            active: false,
             player: ''
         },
         {
-            key: 0,
-            active: false,
+            key: 1,
             player: ''
         },
         {
-            key: 0,
-            active: false,
+            key: 2,
             player: ''
         }
     ],
     [
         {
-            key: 0,
-            active: false,
+            key: 3,
             player: ''
         },
         {
-            key: 0,
-            active: false,
+            key: 4,
             player: ''
         },
         {
-            key: 0,
-            active: false,
+            key: 5,
             player: ''
         }
     ],
     [
         {
-            key: 0,
-            active: false,
+            key: 6,
             player: ''
         },
         {
-            key: 0,
-            active: false,
+            key: 7,
             player: ''
         },
         {
-            key: 0,
-            active: false,
+            key: 8,
             player: ''
         }
     ]
 ];
 
-module.exports = {
-    table: table
+module.exports = function() {
+    return {
+        table: table
+    };
 };
