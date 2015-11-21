@@ -14,7 +14,7 @@ var Table = React.createClass({
             return (
                 <Cell
                     key={column.key}
-                    value={column.player}
+                    value={column.player.name}
                     onClick={this.selectCell.bind(this, x, y)}
                 />
             );

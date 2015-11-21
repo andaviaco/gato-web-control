@@ -1,15 +1,23 @@
 'use strict';
 
 import React from 'react';
+import _ from 'underscore';
 
 import Table from './Table.jsx';
 import Control from './Control.jsx';
+import Score from './Score.jsx';
 
 import Game from '../Game.js';
 
 let players = {
-    '1': 'close', // x
-    '2': 'radio_button_unchecked' // o
+    '1': {
+        name: 'close', // x
+        points: 0
+    },
+    '2': {
+        name: 'radio_button_unchecked', // o
+        points: 0
+    }
 };
 
 var Main = React.createClass({
@@ -18,20 +26,32 @@ var Main = React.createClass({
 
         return {
             table: game.table,
-            currentPlayer: players['1']
+            players: players,
+            currentPlayer: '1'
         };
     },
 
     selectCell: function(x, y) {
+        let winner;
         let table = this.state.table;
 
-        if (!table[x][y].player) {
-            table[x][y].player = this.state.currentPlayer;
+        if (!table[x][y].player.name) {
+            this.setState(function (state) {
+                let players = state.players;
 
-            this.setState({
-                table: table,
-                currentPlayer: this._getNextPlayer()
-            });
+                table[x][y].player = state.players[state.currentPlayer];
+                winner = this._getWinner();
+
+                if (winner) {
+                    players[state.currentPlayer].points++;
+                }
+
+                return {
+                    table: table,
+                    players: players,
+                    currentPlayer: this._getNextPlayer()
+                }
+            }.bind(this));
         }
     },
 
@@ -39,12 +59,68 @@ var Main = React.createClass({
         this.setState(this.getInitialState());
     },
 
-    _getNextPlayer: function() {
-        if (this.state.currentPlayer == players['1']) {
-            return players['2'];
+    resetTable: function() {
+        let initialState = this.getInitialState();
+
+        this.setState({
+            table: initialState.table,
+            players: initialState.players
+        });
+    },
+
+    _searchWinner: function(array) {
+        let winner;
+        let currentPlayer = this.state.players[this.state.currentPlayer];
+
+        var results = _.filter(array, cell => {
+            return cell.player.name === currentPlayer.name;
+        });
+
+        if (results.length === 3) {
+            winner = currentPlayer;
         }
 
-        return players['1'];
+        return winner;
+    },
+
+    _getWinner: function() {
+        let dr = [];
+        let dl = [];
+
+        for (var i = 0; i < this.state.table.length; i++) {
+            let h = [];
+            let v = [];
+
+            for (var j = 0; j < this.state.table[i].length; j++) {
+                h.push(this.state.table[i][j]);
+                v.push(this.state.table[j][i]);
+            };
+
+            let wh = this._searchWinner(h);
+            let wv = this._searchWinner(v);
+
+            if (wh || wv) {
+                return wh || wv;
+            }
+
+            dr.push(this.state.table[i][i]);
+            dl.push(this.state.table[i][2-i]);
+        };
+
+        let wdr = this._searchWinner(dr);
+        let wdl = this._searchWinner(dl);
+
+        return wdr || wdl;
+    },
+
+    _getNextPlayer: function() {
+        let currentPlayer = this.state.players[this.state.currentPlayer];
+
+        if (currentPlayer.name == players['1'].name) {
+            return '2';
+        }
+
+        return '1';
     },
 
     render: function () {
@@ -53,6 +129,10 @@ var Main = React.createClass({
                 <Table
                     data={this.state.table}
                     onSelectCell={this.selectCell}
+                />
+                <Score
+                    currentPlayer={this.state.players[this.state.currentPlayer]}
+                    players={this.state.players}
                 />
                 <Control onReset={this.resetGame} />
             </div>
