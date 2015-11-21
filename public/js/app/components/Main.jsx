@@ -10,7 +10,6 @@ import Score from './Score.jsx';
 import Game from '../Game.js';
 
 
-
 var Main = React.createClass({
     getInitialState: function() {
         let game = new Game();
@@ -75,8 +74,7 @@ var Main = React.createClass({
         let initialState = this.getInitialState();
 
         this.setState({
-            table: initialState.table,
-            currentPlayer: this._getNextPlayer()
+            table: initialState.table
         });
     },
 
