@@ -9,20 +9,24 @@ import Score from './Score.jsx';
 
 import Game from '../Game.js';
 
-let players = {
-    '1': {
-        name: 'close', // x
-        points: 0
-    },
-    '2': {
-        name: 'radio_button_unchecked', // o
-        points: 0
-    }
-};
+
 
 var Main = React.createClass({
     getInitialState: function() {
         let game = new Game();
+        let players = {
+            '1': {
+                name: 'close', // x
+                points: 0
+            },
+            '2': {
+                name: 'radio_button_unchecked', // o
+                points: 0
+            }
+        };
+
+        this.winTimeout = null;
+        this.turn = 0;
 
         return {
             table: game.table,
@@ -32,18 +36,26 @@ var Main = React.createClass({
     },
 
     selectCell: function(x, y) {
+        let players;
         let winner;
         let table = this.state.table;
 
-        if (!table[x][y].player.name) {
+        if (!table[x][y].player.name && !this.winTimeout) {
+            this.turn++;
+
             this.setState(function (state) {
-                let players = state.players;
+                players = state.players;
 
                 table[x][y].player = state.players[state.currentPlayer];
                 winner = this._getWinner();
 
                 if (winner) {
                     players[state.currentPlayer].points++;
+                    this.winTimeout = window.setTimeout(this.resetTable, 3000);
+                }
+
+                if (this.turn == 9) {
+                    this.winTimeout = window.setTimeout(this.resetTable, 3000);
                 }
 
                 return {
@@ -64,7 +76,7 @@ var Main = React.createClass({
 
         this.setState({
             table: initialState.table,
-            players: initialState.players
+            currentPlayer: this._getNextPlayer()
         });
     },
 
@@ -116,7 +128,7 @@ var Main = React.createClass({
     _getNextPlayer: function() {
         let currentPlayer = this.state.players[this.state.currentPlayer];
 
-        if (currentPlayer.name == players['1'].name) {
+        if (currentPlayer.name == this.state.players['1'].name) {
             return '2';
         }
 
