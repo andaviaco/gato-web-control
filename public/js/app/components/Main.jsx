@@ -7,6 +7,7 @@ import Table from './Table.jsx';
 import Control from './Control.jsx';
 import Score from './Score.jsx';
 
+import constants from '../constants';
 import Game from '../Game.js';
 
 
@@ -51,11 +52,13 @@ var Main = React.createClass({
                 if (winner) {
                     players[state.currentPlayer].points++;
                     this.winTimeout = window.setTimeout(this.resetTable, 3000);
-                }
-
-                if (this.turn == 9) {
+                } else if (this.turn == 9) {
                     this.winTimeout = window.setTimeout(this.resetTable, 3000);
                 }
+
+                this._sendSignal({
+                    led: [x, y]
+                });
 
                 return {
                     table: table,
@@ -67,11 +70,19 @@ var Main = React.createClass({
     },
 
     resetGame: function() {
+        this._sendSignal({
+            comand: 'reset'
+        });
+
         this.setState(this.getInitialState());
     },
 
     resetTable: function() {
         let initialState = this.getInitialState();
+
+        this._sendSignal({
+            comand: 'reset'
+        });
 
         this.setState({
             table: initialState.table
@@ -131,6 +142,14 @@ var Main = React.createClass({
         }
 
         return '1';
+    },
+
+    _sendSignal: function(message, callback) {
+        pubnub.publish({
+            channel: constants.pubnub.DEFAULT_CHANNEL,
+            message: message,
+            callback: callback
+        });
     },
 
     render: function () {
