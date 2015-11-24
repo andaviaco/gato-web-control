@@ -52,11 +52,12 @@ var Main = React.createClass({
                 if (winner) {
                     players[state.currentPlayer].points++;
                     this.winTimeout = window.setTimeout(this.resetTable, 3000);
-                } else if (this.turn == 9) {
+                } else if (this.turn == 9) { // draw
                     this.winTimeout = window.setTimeout(this.resetTable, 3000);
                 }
 
                 this._sendSignal({
+                    player: state.currentPlayer,
                     led: [x, y]
                 });
 
